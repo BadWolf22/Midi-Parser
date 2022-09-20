@@ -27,6 +27,7 @@ function parseMidi(content = ArrayBuffer) {
     midi.header = parseHeader(header);
 
     let tracks = [];
+    // FIXME: I don't really like this implementation much
     let pos = 14;
     for (let i = 0; i < midi.header.numTracks; i++) {
         let len = segmentToInt(content.slice(pos+4, pos+8));
@@ -54,7 +55,33 @@ function parseHeader(header) {
 }
 
 function parseTrack(track) {
+    let MTrk = String.fromCharCode(...track.slice(0,4));
+    if (MTrk != "MTrk") throw 'Track incorrectly formatted/loaded.'
+    let trackLength = segmentToInt(track.slice(4,8));
+
+    let pos = 8;
+    let events = [];
+    // delta time is variable length. Therefore, we cannot guess how many bits long it is.
+    // https://en.wikipedia.org/wiki/Variable-length_quantity
+    // FIXME: Incomplete (also make me better)
+    // while (pos - 8 < trackLength) {
+        let offset = -1;
+        let deltaTime = "";
+        do {
+            offset++;
+            let rawDelta = track[pos+offset].toString(2);
+            deltaTime += rawDelta.length < 8 ? rawDelta : rawDelta.slice(1,8);
+        } while (track[pos+offset] >= 128);
+        offset++;
+        // midi, meta, sysex
+        let eventType = track[pos+offset];
+        offset++;
+
+        deltaTime = parseInt(deltaTime, 2);
+        console.log(track[pos+offset+1]);
+    // }
     
+    // console.log(trackLength);
 }
 
 function segmentToInt(segment = Uint8Array) {
