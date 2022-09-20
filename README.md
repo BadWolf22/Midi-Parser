@@ -12,5 +12,5 @@ This is currently a stepping stone. The script itself will be of little use with
 
 ## Resources
 * [Browser File Reading](https://web.dev/read-files/)  
-* [General MIDI Specifications](https://ccrma.stanford.edu/~craig/14q/midifile/MidiFileFormat.html)  
+* [General MIDI Specifications](http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html)  
 * [MIDI Timings](http://midi.teragonaudio.com/tech/midifile/ppqn.htm), and [a bit more](https://sites.uci.edu/camp2014/2014/05/19/timing-in-midi-files/)  
