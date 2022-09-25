@@ -9,6 +9,27 @@
 <body>
     <!-- Basic input form from: https://web.dev/read-files/#select-input -->
     <input type="file" id="file-selector" accept=".mid, .midi" multiple>
+    <script type="text/javascript">
+        // Listens for File Select in HTML
+        const fileSelector = document.getElementById('file-selector');
+        fileSelector.addEventListener('change', (event) => {
+            const fileList = event.target.files;
+            for (let file in Object.keys(fileList)) {
+                readMidi(fileList[file]);
+            }
+        });
+        
+        let myMidi;
+        function readMidi(file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', (event) => {
+                console.info(`Midi File Loaded: ${file.name}`);
+                let parsed = new Midi(reader.result);
+                myMidi = parsed;
+            });
+            reader.readAsArrayBuffer(file);
+        }</script>
+    <script type="text/javascript" src="./Uint8ArrayChanges.js"></script>
     <script type="text/javascript" src="./midi-parser.js"></script>
 </body>
 
