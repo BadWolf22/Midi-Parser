@@ -1,19 +1,23 @@
-Uint8Array.prototype.pointer = 0;
-/**
- * @todo: Implement reading an arbitrary number of bytes using the [variable length standard](http://www.music.mcgill.ca/~ich/classes/mumt306/StandardMIDIfileformat.html#BM1_1).
- */
-Uint8Array.prototype.readBytes = function (numBytes = Number, readType="raw") {
-    if (numBytes == 0) {
-
+Uint8Array.prototype.readBytes = function (numBytes = Number, readType="raw", peek=true) {
+    if (numBytes == 0) { // variable length
+        let varlen = [];
+        do {
+            varlen.push(this.readBytes(1));
+        } while (varlen[varlen.length] > 128);
+        varlen = new Uint8Array(varlen);
+        if (readType == "int") return this.segmentToInt(varlen);
+        if (readType == "str") return this.segmentToStr(varlen);
+        return varlen;
     } else {
         let offset = this.pointer + numBytes;
         let segment = this.slice(this.pointer, offset);
-        this.pointer += numBytes;
+        if (peek) this.pointer += numBytes;
         if (readType == "int") return this.segmentToInt(segment);
         if (readType == "str") return this.segmentToStr(segment);
         return segment;
     }
 }
+
 /**
  * Converts a portion of a `Uint8Array` to an integer.
  * @param {Uint8Array} segment The portion to convert.
